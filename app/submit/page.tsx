@@ -1,0 +1,166 @@
+"use client"
+
+import { useState } from "react"
+import { useRouter } from "next/navigation"
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
+import { Progress } from "@/components/ui/progress"
+import { ArrowLeft } from "lucide-react"
+import Link from "next/link"
+import QuestionOne from "@/components/submit/question-one"
+import QuestionTwo from "@/components/submit/question-two"
+import QuestionThree from "@/components/submit/question-three"
+import RecommendationStep from "@/components/submit/recommendation-step"
+import ProjectSubmissionForm from "@/components/submit/project-submission-form"
+import { getFeedbackRecommendation } from "@/lib/recommendation-logic"
+import { api, useApi } from "@/hooks/use-api"
+
+export type FeedbackType = "hustler" | "hipster" | "hacker"
+
+export interface SubmissionState {
+  step: number
+  answers: {
+    projectStage?: string
+    biggestConcern?: string
+    nextGoal?: string
+  }
+  recommendedType?: FeedbackType
+  selectedType?: FeedbackType
+}
+
+export default function SubmitPage() {
+  const router = useRouter()
+  const { loading, execute } = useApi()
+  const [state, setState] = useState<SubmissionState>({
+    step: 1,
+    answers: {},
+  })
+
+  const updateAnswer = (key: keyof SubmissionState["answers"], value: string) => {
+    setState((prev) => ({
+      ...prev,
+      answers: { ...prev.answers, [key]: value },
+    }))
+  }
+
+  const nextStep = () => {
+    if (state.step === 3) {
+      // Calculate recommendation after question 3
+      const recommendation = getFeedbackRecommendation(state.answers)
+      setState((prev) => ({
+        ...prev,
+        step: prev.step + 1,
+        recommendedType: recommendation,
+        selectedType: recommendation,
+      }))
+    } else {
+      setState((prev) => ({ ...prev, step: prev.step + 1 }))
+    }
+  }
+
+  const prevStep = () => {
+    setState((prev) => ({ ...prev, step: prev.step - 1 }))
+  }
+
+  const selectFeedbackType = (type: FeedbackType) => {
+    setState((prev) => ({ ...prev, selectedType: type }))
+  }
+
+  const submitProject = async (projectData: { title: string; description: string; url: string }) => {
+    try {
+      await execute(() =>
+        api.projects.create({
+          title: projectData.title,
+          description: projectData.description,
+          url: projectData.url || undefined,
+          feedbackType: state.selectedType,
+        }),
+      )
+
+      // Redirect to homepage after successful submission
+      router.push("/")
+    } catch (error) {
+      console.error("Error submitting project:", error)
+      // Error is handled by the useApi hook
+    }
+  }
+
+  const progress = (state.step / 5) * 100
+
+  return (
+    <div className="min-h-screen bg-gray-50">
+      <div className="container mx-auto px-4 py-8">
+        {/* Header */}
+        <div className="mb-8">
+          <Link href="/" className="inline-flex items-center text-blue-600 hover:text-blue-800 mb-4">
+            <ArrowLeft className="w-4 h-4 mr-2" />
+            Back to Home
+          </Link>
+          <h1 className="text-3xl font-bold text-gray-900 mb-2">Submit Your Project</h1>
+          <Progress value={progress} className="w-full max-w-md" />
+          <p className="text-sm text-gray-600 mt-2">Step {state.step} of 5</p>
+        </div>
+
+        {/* Form Steps */}
+        <div className="max-w-2xl mx-auto">
+          <Card>
+            <CardHeader>
+              <CardTitle>
+                {state.step === 1 && "What stage is your project at?"}
+                {state.step === 2 && "What's your biggest concern right now?"}
+                {state.step === 3 && "What do you want to do next?"}
+                {state.step === 4 && "Our Recommendation"}
+                {state.step === 5 && "Project Details"}
+              </CardTitle>
+            </CardHeader>
+            <CardContent>
+              {state.step === 1 && (
+                <QuestionOne
+                  selectedAnswer={state.answers.projectStage}
+                  onSelect={(answer) => updateAnswer("projectStage", answer)}
+                  onNext={nextStep}
+                />
+              )}
+
+              {state.step === 2 && (
+                <QuestionTwo
+                  selectedAnswer={state.answers.biggestConcern}
+                  onSelect={(answer) => updateAnswer("biggestConcern", answer)}
+                  onNext={nextStep}
+                  onPrev={prevStep}
+                />
+              )}
+
+              {state.step === 3 && (
+                <QuestionThree
+                  selectedAnswer={state.answers.nextGoal}
+                  onSelect={(answer) => updateAnswer("nextGoal", answer)}
+                  onNext={nextStep}
+                  onPrev={prevStep}
+                />
+              )}
+
+              {state.step === 4 && (
+                <RecommendationStep
+                  recommendedType={state.recommendedType!}
+                  selectedType={state.selectedType!}
+                  onSelectType={selectFeedbackType}
+                  onNext={nextStep}
+                  onPrev={prevStep}
+                />
+              )}
+
+              {state.step === 5 && (
+                <ProjectSubmissionForm
+                  selectedType={state.selectedType!}
+                  onSubmit={submitProject}
+                  onPrev={prevStep}
+                  loading={loading}
+                />
+              )}
+            </CardContent>
+          </Card>
+        </div>
+      </div>
+    </div>
+  )
+}

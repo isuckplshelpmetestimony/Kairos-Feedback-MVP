@@ -1,0 +1,20 @@
+[
+  {
+    "id": "1",
+    "projectId": "1",
+    "feedback": "The user interface looks clean, but the navigation could be more intuitive. Consider adding breadcrumbs for better user orientation.",
+    "type": "hipster",
+    "helpful": 3,
+    "notHelpful": 0,
+    "createdAt": "2024-01-15T12:00:00Z"
+  },
+  {
+    "id": "2",
+    "projectId": "2",
+    "feedback": "Great concept! The target market seems to be environmentally conscious consumers. Consider partnering with eco-friendly brands for monetization.",
+    "type": "hustler",
+    "helpful": 2,
+    "notHelpful": 1,
+    "createdAt": "2024-01-14T15:30:00Z"
+  }
+]

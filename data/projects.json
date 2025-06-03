@@ -1,0 +1,26 @@
+[
+  {
+    "id": "1",
+    "title": "TaskFlow - Project Management App",
+    "description": "A modern project management tool built with React and Node.js. Looking for feedback on user experience and feature prioritization.",
+    "url": "https://taskflow-demo.com",
+    "feedbackType": "hipster",
+    "createdAt": "2024-01-15T10:00:00Z"
+  },
+  {
+    "id": "2",
+    "title": "EcoTracker - Carbon Footprint Calculator",
+    "description": "Mobile app that helps users track and reduce their carbon footprint. Need validation on market demand and business model.",
+    "url": "https://ecotracker.app",
+    "feedbackType": "hustler",
+    "createdAt": "2024-01-14T09:30:00Z"
+  },
+  {
+    "id": "3",
+    "title": "CodeReview AI - Automated Code Analysis",
+    "description": "AI-powered tool for automated code reviews and suggestions. Looking for technical feedback on architecture and scalability.",
+    "url": "https://github.com/user/codereview-ai",
+    "feedbackType": "hacker",
+    "createdAt": "2024-01-13T14:20:00Z"
+  }
+]
