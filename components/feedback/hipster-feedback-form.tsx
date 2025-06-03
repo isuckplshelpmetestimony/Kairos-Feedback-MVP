@@ -29,7 +29,7 @@ export default function HipsterFeedbackForm({ project, onSubmit }: HipsterFeedba
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault()
     onSubmit({
-      type: "Hipster",
+      type: "hipster",
       projectId: project.id,
       ...formData,
       submittedAt: new Date(),

@@ -29,7 +29,7 @@ export default function HackerFeedbackForm({ project, onSubmit }: HackerFeedback
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault()
     onSubmit({
-      type: "Hacker",
+      type: "hacker",
       projectId: project.id,
       ...formData,
       submittedAt: new Date(),
