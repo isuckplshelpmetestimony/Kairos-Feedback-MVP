@@ -1,5 +1,6 @@
+# Trigger Netlify to re-read this file
 [build]
-  command = "pnpm build"
+  command = "npx prisma generate && pnpm build"
   publish = ".next"
 
 [[plugins]]
