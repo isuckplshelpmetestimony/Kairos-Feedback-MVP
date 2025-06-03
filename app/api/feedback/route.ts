@@ -1,5 +1,5 @@
 import { type NextRequest, NextResponse } from "next/server"
-import { readFeedback, writeFeedback, generateId, type Feedback } from "@/lib/data-utils"
+import { createFeedback } from "@/lib/data-utils"
 
 export async function POST(request: NextRequest) {
   try {
@@ -15,19 +15,13 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: "Invalid feedback type" }, { status: 400 })
     }
 
-    const allFeedback = readFeedback()
-    const newFeedback: Feedback = {
-      id: generateId(),
+    const newFeedback = await createFeedback({
       projectId,
       feedback: feedback.trim(),
       type,
       helpful: 0,
       notHelpful: 0,
-      createdAt: new Date().toISOString(),
-    }
-
-    allFeedback.unshift(newFeedback) // Add to beginning of array
-    writeFeedback(allFeedback)
+    })
 
     return NextResponse.json(newFeedback, { status: 201 })
   } catch (error) {

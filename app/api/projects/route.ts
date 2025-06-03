@@ -1,9 +1,9 @@
 import { type NextRequest, NextResponse } from "next/server"
-import { readProjects, writeProjects, generateId, type Project } from "@/lib/data-utils"
+import { getProjects, createProject } from "@/lib/data-utils"
 
 export async function GET() {
   try {
-    const projects = readProjects()
+    const projects = await getProjects()
     return NextResponse.json(projects)
   } catch (error) {
     return NextResponse.json({ error: "Failed to fetch projects" }, { status: 500 })
@@ -24,18 +24,12 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: "Invalid feedback type" }, { status: 400 })
     }
 
-    const projects = readProjects()
-    const newProject: Project = {
-      id: generateId(),
+    const newProject = await createProject({
       title: title.trim(),
       description: description.trim(),
       url: url?.trim() || undefined,
       feedbackType,
-      createdAt: new Date().toISOString(),
-    }
-
-    projects.unshift(newProject) // Add to beginning of array
-    writeProjects(projects)
+    })
 
     return NextResponse.json(newProject, { status: 201 })
   } catch (error) {
