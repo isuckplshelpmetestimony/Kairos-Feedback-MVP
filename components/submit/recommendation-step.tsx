@@ -24,21 +24,21 @@ export default function RecommendationStep({
 }: RecommendationStepProps) {
   const feedbackTypes = [
     {
-      type: "Hustler" as FeedbackType,
+      type: "hustler" as FeedbackType,
       icon: TrendingUp,
       color: "text-green-600",
       bgColor: "bg-green-50",
       borderColor: "border-green-200",
     },
     {
-      type: "Hipster" as FeedbackType,
+      type: "hipster" as FeedbackType,
       icon: Lightbulb,
       color: "text-purple-600",
       bgColor: "bg-purple-50",
       borderColor: "border-purple-200",
     },
     {
-      type: "Hacker" as FeedbackType,
+      type: "hacker" as FeedbackType,
       icon: Code,
       color: "text-blue-600",
       bgColor: "bg-blue-50",

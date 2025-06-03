@@ -13,7 +13,7 @@ import type { FeedbackType } from "@/app/submit/page"
 
 interface ProjectSubmissionFormProps {
   selectedType: FeedbackType
-  onSubmit: (data: { title: string; description: string; url: string }) => void
+  onSubmit: (data: { title: string; description: string; url: string; feedbackType: FeedbackType }) => void
   onPrev: () => void
   loading?: boolean
 }
@@ -27,20 +27,15 @@ export default function ProjectSubmissionForm({ selectedType, onSubmit, onPrev, 
 
   const [errors, setErrors] = useState<Record<string, string>>({})
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
-
-    // Validation
-    const newErrors: Record<string, string> = {}
-    if (!formData.title.trim()) newErrors.title = "Title is required"
-    if (!formData.description.trim()) newErrors.description = "Description is required"
-    if (formData.url && !isValidUrl(formData.url)) newErrors.url = "Please enter a valid URL"
-
-    setErrors(newErrors)
-
-    if (Object.keys(newErrors).length === 0) {
-      onSubmit(formData)
+    
+    const projectData = {
+      ...formData,
+      feedbackType: selectedType.toLowerCase() as FeedbackType
     }
+    
+    await onSubmit(projectData)
   }
 
   const isValidUrl = (string: string) => {

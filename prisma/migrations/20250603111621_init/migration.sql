@@ -3,7 +3,7 @@ CREATE TABLE "Project" (
     "id" TEXT NOT NULL PRIMARY KEY,
     "title" TEXT NOT NULL,
     "description" TEXT NOT NULL,
-    "url" TEXT NOT NULL,
+    "url" TEXT,
     "feedbackType" TEXT NOT NULL,
     "createdAt" DATETIME NOT NULL
 );

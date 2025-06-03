@@ -1,6 +1,5 @@
-import { PrismaClient, Project as PrismaProject, Feedback as PrismaFeedback } from "../lib/generated/prisma";
-
-const prisma = new PrismaClient();
+import { Project as PrismaProject, Feedback as PrismaFeedback } from "../lib/generated/prisma";
+import prisma from "../lib/db";
 
 export interface Project {
   id: string;
@@ -56,10 +55,11 @@ export async function getProjectById(id: string): Promise<Project | null> {
 }
 
 export async function createProject(data: Omit<Project, "id" | "createdAt">): Promise<Project> {
+  const { url, ...rest } = data;
   const project = await prisma.project.create({
     data: {
-      ...data,
-      url: data.url ?? "",
+      ...rest,
+      ...(url ? { url } : {}),
       createdAt: new Date().toISOString(),
     },
   });

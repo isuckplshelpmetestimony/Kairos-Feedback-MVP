@@ -62,25 +62,41 @@ export default function SubmitPage() {
   }
 
   const selectFeedbackType = (type: FeedbackType) => {
-    setState((prev) => ({ ...prev, selectedType: type }))
+    setState((prev) => ({ ...prev, selectedType: type.toLowerCase() as FeedbackType }))
   }
 
   const submitProject = async (projectData: { title: string; description: string; url: string }) => {
+    const feedbackType = (state.selectedType || "").toLowerCase();
+    if (!["hustler", "hipster", "hacker"].includes(feedbackType)) {
+      alert("Feedback type is invalid: " + feedbackType);
+      return;
+    }
+    console.log("Submitting project:", {
+      title: projectData.title,
+      description: projectData.description,
+      url: projectData.url || undefined,
+      feedbackType,
+    });
     try {
       await execute(() =>
         api.projects.create({
           title: projectData.title,
           description: projectData.description,
           url: projectData.url || undefined,
-          feedbackType: state.selectedType,
+          feedbackType,
         }),
-      )
-
-      // Redirect to homepage after successful submission
-      router.push("/")
-    } catch (error) {
-      console.error("Error submitting project:", error)
-      // Error is handled by the useApi hook
+      );
+      router.push("/");
+    } catch (error: any) {
+      // Debug: Show real error from backend
+      if (error && error.response && typeof error.response.json === 'function') {
+        error.response.json().then((data: any) => {
+          alert(JSON.stringify(data, null, 2));
+        });
+      } else {
+        alert(error?.message || String(error));
+      }
+      console.error("Error submitting project:", error);
     }
   }
 

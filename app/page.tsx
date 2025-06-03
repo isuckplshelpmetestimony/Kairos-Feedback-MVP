@@ -1,6 +1,6 @@
 "use client"
 
-import { useEffect } from "react"
+import { useEffect, useState } from "react"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
@@ -9,7 +9,7 @@ import Link from "next/link"
 import { api, useApi } from "@/hooks/use-api"
 import type { Project } from "@/lib/data-utils"
 
-function ProjectCard({ project }: { project: Project }) {
+function ProjectCard({ project, onDelete, deleting }: { project: Project, onDelete: (id: string) => void, deleting?: boolean }) {
   const getBadgeColor = (type: string) => {
     switch (type) {
       case "hustler":
@@ -71,6 +71,17 @@ function ProjectCard({ project }: { project: Project }) {
               Give Feedback
             </Button>
           </Link>
+
+          {/* Delete Button (show for all for now) */}
+          <Button
+            variant="destructive"
+            size="sm"
+            onClick={() => onDelete(project.id)}
+            className="ml-2"
+            disabled={deleting}
+          >
+            {deleting ? <Loader2 className="w-4 h-4 animate-spin" /> : "Delete"}
+          </Button>
         </div>
       </CardContent>
     </Card>
@@ -78,7 +89,25 @@ function ProjectCard({ project }: { project: Project }) {
 }
 
 export default function HomePage() {
-  const { data: projects, loading, error, execute } = useApi<Project[]>()
+  const { data, loading, error, execute } = useApi<Project[]>()
+  const { execute: deleteProjectApi } = useApi()
+  const [projects, setProjects] = useState<Project[]>([])
+  const [deletingId, setDeletingId] = useState<string | null>(null)
+
+  useEffect(() => {
+    if (data) setProjects(data)
+  }, [data])
+
+  const handleDelete = async (id: string) => {
+    if (confirm("Are you sure you want to delete this project?")) {
+      setDeletingId(id)
+      await deleteProjectApi(() =>
+        fetch(`/api/projects/${id}`, { method: "DELETE" })
+      )
+      setProjects((prev: Project[]) => prev.filter((p: Project) => p.id !== id))
+      setDeletingId(null)
+    }
+  }
 
   useEffect(() => {
     execute(api.projects.getAll)
@@ -197,7 +226,12 @@ export default function HomePage() {
           {projects && projects.length > 0 ? (
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
               {projects.map((project) => (
-                <ProjectCard key={project.id} project={project} />
+                <ProjectCard
+                  key={project.id}
+                  project={project}
+                  onDelete={handleDelete}
+                  deleting={deletingId === project.id}
+                />
               ))}
             </div>
           ) : (

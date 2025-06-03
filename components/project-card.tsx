@@ -12,11 +12,11 @@ interface ProjectCardProps {
 export default function ProjectCard({ project }: ProjectCardProps) {
   const getBadgeColor = (type: string) => {
     switch (type) {
-      case "Hustler":
+      case "hustler":
         return "bg-green-100 text-green-800 hover:bg-green-200"
-      case "Hipster":
+      case "hipster":
         return "bg-purple-100 text-purple-800 hover:bg-purple-200"
-      case "Hacker":
+      case "hacker":
         return "bg-blue-100 text-blue-800 hover:bg-blue-200"
       default:
         return "bg-gray-100 text-gray-800"
