@@ -3,7 +3,10 @@ import { createFeedback } from "@/lib/data-utils"
 
 export async function POST(request: NextRequest) {
   try {
-    const body = await request.json()
+    const rawBody = await request.text();
+    console.log('RAW BODY:', rawBody);
+    const body = JSON.parse(rawBody);
+    console.log('PARSED BODY:', body);
     const { projectId, feedback, type } = body
 
     // Validation

@@ -2,7 +2,7 @@ import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
 import { ExternalLink, Calendar, User } from "lucide-react"
-import type { Project } from "@/lib/mock-data"
+import type { Project } from "@/lib/data-utils"
 import Link from "next/link"
 
 interface ProjectCardProps {
@@ -39,12 +39,8 @@ export default function ProjectCard({ project }: ProjectCardProps) {
             <CardTitle className="text-lg font-semibold text-gray-900 line-clamp-2">{project.title}</CardTitle>
             <div className="flex items-center gap-4 mt-2 text-sm text-gray-600">
               <div className="flex items-center gap-1">
-                <User className="w-4 h-4" />
-                {project.author}
-              </div>
-              <div className="flex items-center gap-1">
                 <Calendar className="w-4 h-4" />
-                {formatDate(project.submittedAt)}
+                {formatDate(new Date(project.createdAt))}
               </div>
             </div>
           </div>

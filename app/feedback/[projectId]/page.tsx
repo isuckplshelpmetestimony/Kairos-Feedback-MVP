@@ -113,7 +113,7 @@ export default function FeedbackPage() {
         api.feedback.create({
           projectId,
           feedback: feedbackData.feedback,
-          type: project?.feedbackType,
+          type: feedbackData.type,
         }),
       )
       setIsSubmitted(true)

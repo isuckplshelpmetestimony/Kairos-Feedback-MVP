@@ -1,5 +1,5 @@
 import { type NextRequest, NextResponse } from "next/server"
-import { getProjects, createProject } from "@/lib/data-utils"
+import { getProjects, createProject } from "../../../lib/data-utils"
 import { z } from "zod"
 
 const ProjectSchema = z.object({

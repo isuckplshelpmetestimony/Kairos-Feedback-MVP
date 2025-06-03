@@ -9,7 +9,7 @@ import { Label } from "@/components/ui/label"
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Lightbulb } from "lucide-react"
-import type { Project } from "@/lib/mock-data"
+import type { Project } from "@/lib/data-utils"
 
 interface HipsterFeedbackFormProps {
   project: Project
@@ -28,11 +28,22 @@ export default function HipsterFeedbackForm({ project, onSubmit }: HipsterFeedba
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault()
+    // Combine all feedback into a single text
+    const feedbackText = `
+**First Impression:** ${formData.firstImpressionRating}\n${formData.firstImpression}
+
+**User Flow:** ${formData.userFlow}
+
+**Confusing Elements:** ${formData.confusing}
+
+**Visual Design Suggestions:** ${formData.visualDesign}
+
+**Additional Insights:** ${formData.additionalThoughts}
+    `.trim()
     onSubmit({
       type: "hipster",
       projectId: project.id,
-      ...formData,
-      submittedAt: new Date(),
+      feedback: feedbackText,
     })
   }
 

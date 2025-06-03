@@ -9,7 +9,7 @@ import { Label } from "@/components/ui/label"
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Code } from "lucide-react"
-import type { Project } from "@/lib/mock-data"
+import type { Project } from "@/lib/data-utils"
 
 interface HackerFeedbackFormProps {
   project: Project
@@ -28,11 +28,22 @@ export default function HackerFeedbackForm({ project, onSubmit }: HackerFeedback
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault()
+    // Combine all feedback into a single text
+    const feedbackText = `
+**Code Quality Assessment:** ${formData.codeQualityRating}\n${formData.codeQuality}
+
+**Architecture Suggestions:** ${formData.architecture}
+
+**Performance Issues:** ${formData.performance}
+
+**Security Considerations:** ${formData.security}
+
+**Additional Technical Insights:** ${formData.additionalThoughts}
+    `.trim()
     onSubmit({
       type: "hacker",
       projectId: project.id,
-      ...formData,
-      submittedAt: new Date(),
+      feedback: feedbackText,
     })
   }
 
