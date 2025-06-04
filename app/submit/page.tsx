@@ -13,6 +13,7 @@ import RecommendationStep from "@/components/submit/recommendation-step"
 import ProjectSubmissionForm from "@/components/submit/project-submission-form"
 import { getFeedbackRecommendation } from "@/lib/recommendation-logic"
 import { api, useApi } from "@/hooks/use-api"
+import { v4 as uuidv4 } from 'uuid'
 
 export type FeedbackType = "hustler" | "hipster" | "hacker"
 
@@ -65,17 +66,29 @@ export default function SubmitPage() {
     setState((prev) => ({ ...prev, selectedType: type.toLowerCase() as FeedbackType }))
   }
 
+  const getOwnerToken = () => {
+    if (typeof window === 'undefined') return '';
+    let token = localStorage.getItem('ownerToken');
+    if (!token) {
+      token = uuidv4();
+      localStorage.setItem('ownerToken', token);
+    }
+    return token || '';
+  };
+
   const submitProject = async (projectData: { title: string; description: string; url: string }) => {
-    const feedbackType = (state.selectedType || "").toLowerCase();
-    if (!["hustler", "hipster", "hacker"].includes(feedbackType)) {
-      alert("Feedback type is invalid: " + feedbackType);
+    const feedbackType = (state.selectedType || '').toLowerCase();
+    if (!['hustler', 'hipster', 'hacker'].includes(feedbackType)) {
+      alert('Feedback type is invalid: ' + feedbackType);
       return;
     }
+    const ownerToken = getOwnerToken();
     console.log("Submitting project:", {
       title: projectData.title,
       description: projectData.description,
       url: projectData.url || undefined,
       feedbackType,
+      ownerToken,
     });
     try {
       await execute(() =>
@@ -84,9 +97,10 @@ export default function SubmitPage() {
           description: projectData.description,
           url: projectData.url || undefined,
           feedbackType,
+          ownerToken,
         }),
       );
-      router.push("/");
+      router.push('/');
     } catch (error: any) {
       // Debug: Show real error from backend
       if (error && error.response && typeof error.response.json === 'function') {

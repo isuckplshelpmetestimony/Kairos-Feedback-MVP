@@ -8,6 +8,7 @@ export interface Project {
   url?: string;
   feedbackType: "hustler" | "hipster" | "hacker";
   createdAt: string;
+  ownerToken: string;
 }
 
 export interface Feedback {
@@ -28,6 +29,7 @@ function mapProject(p: PrismaProject): Project {
     url: p.url ?? undefined,
     feedbackType: p.feedbackType as Project["feedbackType"],
     createdAt: p.createdAt instanceof Date ? p.createdAt.toISOString() : p.createdAt,
+    ownerToken: p.ownerToken,
   };
 }
 

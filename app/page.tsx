@@ -35,6 +35,14 @@ function ProjectCard({ project, onDelete, deleting }: { project: Project, onDele
     return type.charAt(0).toUpperCase() + type.slice(1)
   }
 
+  // Device ownerToken
+  let deviceToken = '';
+  if (typeof window !== 'undefined') {
+    deviceToken = localStorage.getItem('ownerToken') || '';
+  }
+
+  const canDelete = deviceToken && deviceToken === project.ownerToken;
+
   return (
     <Card className="h-full hover:shadow-lg transition-all duration-200 hover:-translate-y-1">
       <CardHeader className="pb-3">
@@ -72,16 +80,18 @@ function ProjectCard({ project, onDelete, deleting }: { project: Project, onDele
             </Button>
           </Link>
 
-          {/* Delete Button (show for all for now) */}
-          <Button
-            variant="destructive"
-            size="sm"
-            onClick={() => onDelete(project.id)}
-            className="ml-2"
-            disabled={deleting}
-          >
-            {deleting ? <Loader2 className="w-4 h-4 animate-spin" /> : "Delete"}
-          </Button>
+          {/* Delete Button (only for owner) */}
+          {canDelete && (
+            <Button
+              variant="destructive"
+              size="sm"
+              onClick={() => onDelete(project.id)}
+              className="ml-2"
+              disabled={deleting}
+            >
+              {deleting ? <Loader2 className="w-4 h-4 animate-spin" /> : "Delete"}
+            </Button>
+          )}
         </div>
       </CardContent>
     </Card>

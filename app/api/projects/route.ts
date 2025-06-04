@@ -7,6 +7,7 @@ const ProjectSchema = z.object({
   description: z.string().min(1, "Description is required"),
   url: z.string().url("Invalid URL").optional().or(z.literal("").transform(() => undefined)),
   feedbackType: z.enum(["hustler", "hipster", "hacker"]),
+  ownerToken: z.string().min(1, "Missing owner token"),
 })
 
 export async function GET() {
@@ -25,12 +26,13 @@ export async function POST(request: NextRequest) {
     if (!result.success) {
       return NextResponse.json({ error: "Invalid data", details: result.error.flatten() }, { status: 400 })
     }
-    const { title, description, url, feedbackType } = result.data
+    const { title, description, url, feedbackType, ownerToken } = result.data
     const newProject = await createProject({
       title: title.trim(),
       description: description.trim(),
       url: url?.trim() || undefined,
       feedbackType,
+      ownerToken,
     })
     return NextResponse.json(newProject, { status: 201 })
   } catch (error) {

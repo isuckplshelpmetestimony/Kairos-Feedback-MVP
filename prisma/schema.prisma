@@ -22,6 +22,7 @@ model Project {
   feedbackType String
   createdAt   DateTime
   feedbacks   Feedback[]
+  ownerToken  String
 }
 
 model Feedback {
