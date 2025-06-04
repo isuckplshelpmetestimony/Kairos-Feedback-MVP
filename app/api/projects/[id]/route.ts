@@ -17,6 +17,24 @@ export async function GET(request: NextRequest, context: { params: Promise<{ id:
 export async function DELETE(request: NextRequest, context: { params: Promise<{ id: string }> }) {
   try {
     const { id } = await context.params;
+    // Accept ownerToken from either header or body
+    let ownerToken = request.headers.get("x-owner-token");
+    if (!ownerToken) {
+      try {
+        const body = await request.json();
+        ownerToken = body.ownerToken;
+      } catch {}
+    }
+    if (!ownerToken) {
+      return NextResponse.json({ error: "Missing owner token" }, { status: 400 })
+    }
+    const project = await getProjectById(id);
+    if (!project) {
+      return NextResponse.json({ error: "Project not found" }, { status: 404 })
+    }
+    if (project.ownerToken !== ownerToken) {
+      return NextResponse.json({ error: "Not authorized to delete this project" }, { status: 403 })
+    }
     const deleted = await deleteProject(id);
     if (!deleted) {
       return NextResponse.json({ error: "Project not found" }, { status: 404 })

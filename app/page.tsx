@@ -111,8 +111,18 @@ export default function HomePage() {
   const handleDelete = async (id: string) => {
     if (confirm("Are you sure you want to delete this project?")) {
       setDeletingId(id)
+      // Get ownerToken from localStorage
+      let ownerToken = '';
+      if (typeof window !== 'undefined') {
+        ownerToken = localStorage.getItem('ownerToken') || '';
+      }
       await deleteProjectApi(() =>
-        fetch(`/api/projects/${id}`, { method: "DELETE" })
+        fetch(`/api/projects/${id}`, {
+          method: "DELETE",
+          headers: {
+            "x-owner-token": ownerToken,
+          },
+        })
       )
       setProjects((prev: Project[]) => prev.filter((p: Project) => p.id !== id))
       setDeletingId(null)

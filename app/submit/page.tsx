@@ -1,6 +1,6 @@
 "use client"
 
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import { useRouter } from "next/navigation"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Progress } from "@/components/ui/progress"
@@ -36,6 +36,17 @@ export default function SubmitPage() {
     answers: {},
   })
 
+  // Ensure ownerToken is set as soon as the page loads (client-side)
+  useEffect(() => {
+    if (typeof window !== 'undefined') {
+      let token = localStorage.getItem('ownerToken');
+      if (!token || typeof token !== 'string' || token.length < 10) {
+        token = uuidv4();
+        localStorage.setItem('ownerToken', token);
+      }
+    }
+  }, [])
+
   const updateAnswer = (key: keyof SubmissionState["answers"], value: string) => {
     setState((prev) => ({
       ...prev,
@@ -69,11 +80,12 @@ export default function SubmitPage() {
   const getOwnerToken = () => {
     if (typeof window === 'undefined') return '';
     let token = localStorage.getItem('ownerToken');
-    if (!token) {
+    // Always generate a new token if not present
+    if (!token || typeof token !== 'string' || token.length < 10) {
       token = uuidv4();
       localStorage.setItem('ownerToken', token);
     }
-    return token || '';
+    return token;
   };
 
   const submitProject = async (projectData: { title: string; description: string; url: string }) => {
