@@ -9,6 +9,7 @@ export interface Project {
   feedbackType: "hustler" | "hipster" | "hacker";
   createdAt: string;
   ownerToken: string;
+  notificationEmail?: string | null;
 }
 
 export interface Feedback {
@@ -30,6 +31,7 @@ function mapProject(p: PrismaProject): Project {
     feedbackType: p.feedbackType as Project["feedbackType"],
     createdAt: p.createdAt instanceof Date ? p.createdAt.toISOString() : p.createdAt,
     ownerToken: p.ownerToken,
+    notificationEmail: p.notificationEmail ?? null,
   };
 }
 
@@ -57,11 +59,12 @@ export async function getProjectById(id: string): Promise<Project | null> {
 }
 
 export async function createProject(data: Omit<Project, "id" | "createdAt">): Promise<Project> {
-  const { url, ...rest } = data;
+  const { url, notificationEmail, ...rest } = data;
   const project = await prisma.project.create({
     data: {
       ...rest,
       ...(url ? { url } : {}),
+      ...(notificationEmail ? { notificationEmail } : {}),
       createdAt: new Date().toISOString(),
     },
   });

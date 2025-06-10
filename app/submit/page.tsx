@@ -88,7 +88,7 @@ export default function SubmitPage() {
     return token;
   };
 
-  const submitProject = async (projectData: { title: string; description: string; url: string }) => {
+  const submitProject = async (projectData: { title: string; description: string; url: string; notificationEmail?: string }) => {
     const feedbackType = (state.selectedType || '').toLowerCase();
     if (!['hustler', 'hipster', 'hacker'].includes(feedbackType)) {
       alert('Feedback type is invalid: ' + feedbackType);
@@ -101,6 +101,7 @@ export default function SubmitPage() {
       url: projectData.url || undefined,
       feedbackType,
       ownerToken,
+      notificationEmail: projectData.notificationEmail || undefined,
     });
     try {
       await execute(() =>
@@ -110,6 +111,7 @@ export default function SubmitPage() {
           url: projectData.url || undefined,
           feedbackType,
           ownerToken,
+          notificationEmail: projectData.notificationEmail?.trim() || undefined,
         }),
       );
       router.push('/');

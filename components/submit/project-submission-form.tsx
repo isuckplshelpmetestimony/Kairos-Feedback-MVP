@@ -23,6 +23,7 @@ export default function ProjectSubmissionForm({ selectedType, onSubmit, onPrev, 
     title: "",
     description: "",
     url: "",
+    notificationEmail: "",
   })
 
   const [errors, setErrors] = useState<Record<string, string>>({})
@@ -135,6 +136,19 @@ export default function ProjectSubmissionForm({ selectedType, onSubmit, onPrev, 
           />
           {errors.url && <p className="text-sm text-red-600">{errors.url}</p>}
           <p className="text-sm text-gray-500">Optional: Link to your live project, GitHub repo, or demo</p>
+        </div>
+
+        <div className="space-y-2">
+          <Label htmlFor="notificationEmail">Notification Email (optional)</Label>
+          <Input
+            id="notificationEmail"
+            type="email"
+            value={formData.notificationEmail}
+            onChange={(e) => setFormData((prev) => ({ ...prev, notificationEmail: e.target.value }))}
+            placeholder="We'll notify you at this email when someone leaves feedback on your project."
+            disabled={loading}
+          />
+          <p className="text-sm text-gray-500">We'll notify you at this email when someone leaves feedback on your project.</p>
         </div>
 
         <div className="flex justify-between pt-4">
