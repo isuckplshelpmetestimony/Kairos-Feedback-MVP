@@ -146,9 +146,13 @@ export default function ProjectSubmissionForm({ selectedType, onSubmit, onPrev, 
             value={formData.notificationEmail}
             onChange={(e) => setFormData((prev) => ({ ...prev, notificationEmail: e.target.value }))}
             placeholder="We'll notify you at this email when someone leaves feedback on your project."
-            disabled={loading}
           />
-          <p className="text-sm text-gray-500">We'll notify you at this email when someone leaves feedback on your project.</p>
+          <p className="text-xs text-muted-foreground">
+            We'll notify you at this email when someone leaves feedback on your project.<br />
+            <span className="text-xs text-yellow-600 font-medium">
+              For your first notification, the email may go to your spam folder. Please mark it as NOT SPAM to ensure you continue receiving feedback notifications.
+            </span>
+          </p>
         </div>
 
         <div className="flex justify-between pt-4">
