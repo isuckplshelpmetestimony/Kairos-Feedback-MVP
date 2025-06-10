@@ -226,7 +226,7 @@ export default function FeedbackPage() {
         <div className="grid lg:grid-cols-3 gap-8">
           {/* Project Info Sidebar */}
           <div className="lg:col-span-1">
-            <Card className="sticky top-8 mb-6">
+            <Card className="mb-8">
               <CardHeader>
                 <div className="flex items-start justify-between gap-2 mb-4">
                   <CardTitle className="text-xl">{project.title}</CardTitle>
@@ -254,7 +254,7 @@ export default function FeedbackPage() {
             </Card>
 
             {/* Existing Feedback */}
-            <div>
+            <div className="pt-8">
               <h3 className="text-lg font-semibold text-gray-900 mb-4">
                 Previous Feedback ({feedbackList?.length || 0})
               </h3>
